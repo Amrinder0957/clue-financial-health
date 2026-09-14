@@ -1,6 +1,7 @@
 import json
 import math
 import uuid
+from pathlib import Path
 
 from fastapi import APIRouter, HTTPException, UploadFile, File
 from pydantic import BaseModel, Field
@@ -11,6 +12,8 @@ from app.domain.prediction.simulator import simulate_expense_reduction
 
 
 router = APIRouter()
+
+MAX_FILE_SIZE = 5 * 1024 * 1024  # 5 MB
 
 
 # =========================
@@ -93,7 +96,6 @@ def schema():
 async def create_analysis(
     file: UploadFile = File(...)
 ):
-
     if not file.filename:
         raise HTTPException(
             status_code=400,
@@ -106,7 +108,11 @@ async def create_analysis(
             detail="Only CSV files are supported.",
         )
 
-    content = await file.read()
+    # Prevent path traversal in stored/displayed filename
+    safe_filename = Path(file.filename).name
+
+    # Read only up to 5 MB + 1 byte so oversized files are detected
+    content = await file.read(MAX_FILE_SIZE + 1)
 
     if not content:
         raise HTTPException(
@@ -114,17 +120,21 @@ async def create_analysis(
             detail="Uploaded file is empty.",
         )
 
-    try:
+    if len(content) > MAX_FILE_SIZE:
+        raise HTTPException(
+            status_code=400,
+            detail="File is too large. Maximum size is 5 MB.",
+        )
 
+    try:
         report = build_analysis_report(
             content=content,
-            filename=file.filename,
+            filename=safe_filename,
         )
 
         analysis_id = str(uuid.uuid4())
 
         report_data = clean_json_value({
-
             "score": report.score.overall_score,
 
             "band": report.score.band,
@@ -165,10 +175,9 @@ async def create_analysis(
         db = SessionLocal()
 
         try:
-
             record = AnalysisRecord(
                 id=analysis_id,
-                filename=file.filename,
+                filename=safe_filename,
                 report_json=json.dumps(
                     report_data,
                     default=str,
@@ -184,15 +193,17 @@ async def create_analysis(
         return {
             "status": "completed",
             "analysis_id": analysis_id,
-            "filename": file.filename,
+            "filename": safe_filename,
             **report_data,
         }
 
-    except Exception as exc:
+    except HTTPException:
+        raise
 
+    except Exception:
         raise HTTPException(
             status_code=400,
-            detail=str(exc),
+            detail="Unable to process the uploaded CSV.",
         )
 
 
@@ -204,11 +215,9 @@ async def create_analysis(
 def get_analysis(
     analysis_id: str
 ):
-
     db = SessionLocal()
 
     try:
-
         record = (
             db.query(AnalysisRecord)
             .filter(
@@ -218,7 +227,6 @@ def get_analysis(
         )
 
         if record is None:
-
             raise HTTPException(
                 status_code=404,
                 detail="Analysis not found.",
@@ -245,26 +253,15 @@ def get_analysis(
 def run_what_if(
     request: WhatIfRequest
 ):
-
     try:
-
         result = simulate_expense_reduction(
-
-            current_balance=
-                request.current_balance,
-
-            average_daily_inflow=
-                request.average_daily_inflow,
-
-            average_daily_outflow=
-                request.average_daily_outflow,
-
-            reduction_percent=
-                request.reduction_percent,
+            current_balance=request.current_balance,
+            average_daily_inflow=request.average_daily_inflow,
+            average_daily_outflow=request.average_daily_outflow,
+            reduction_percent=request.reduction_percent,
         )
 
         return clean_json_value({
-
             "reduction_percent":
                 request.reduction_percent,
 
@@ -278,13 +275,11 @@ def run_what_if(
                 result.runway_change_days,
 
             "description":
-                 result.scenario_description,
-    
+                result.scenario_description,
         })
 
-    except Exception as exc:
-
+    except Exception:
         raise HTTPException(
             status_code=400,
-            detail=str(exc),
+            detail="Unable to run the what-if simulation.",
         )

@@ -1134,28 +1134,43 @@ function displaySimulation(
         );
 
 
-    const improvement =
-        Number(
-            result.runway_change_days
-        );
+    const originalRunway = result.original_runway_days;
+    const scenarioRunway = result.scenario_runway_days;
+
+    const originalIsInfinite =
+        originalRunway === "infinite" ||
+        originalRunway === Infinity;
+
+    const scenarioIsInfinite =
+        scenarioRunway === "infinite" ||
+        scenarioRunway === Infinity;
 
 
-    if (
-        improvement === Infinity ||
-        result.runway_change_days === "infinite"
-    ) {
+    if (originalIsInfinite && scenarioIsInfinite) {
 
         $("runwayImprovement")
             .textContent =
-            "Significant";
+            "Already sustainable";
 
     } else {
 
-        $("runwayImprovement")
-            .textContent =
-            improvement >= 0
-                ? `+${improvement.toFixed(1)} days`
-                : `${improvement.toFixed(1)} days`;
+        const improvement =
+            Number(result.runway_change_days);
+
+        if (improvement === Infinity) {
+
+            $("runwayImprovement")
+                .textContent =
+                "Significant";
+
+        } else {
+
+            $("runwayImprovement")
+                .textContent =
+                improvement >= 0
+                    ? `+${improvement.toFixed(1)} days`
+                    : `${improvement.toFixed(1)} days`;
+        }
     }
 
 
