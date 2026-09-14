@@ -11,4 +11,12 @@ app = FastAPI(
 
 app.include_router(router)
 
-app.mount("/", StaticFiles(directory="app/static", html=True), name="static")
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent
+
+app.mount(
+    "/",
+    StaticFiles(directory=BASE_DIR / "static", html=True),
+    name="static"
+)
