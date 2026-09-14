@@ -1,0 +1,11 @@
+date,amount,direction,description,counterparty,category
+2026-01-01,15000,in,Sales payment,Customer A,Sales
+2026-01-02,12000,out,Inventory,Supplier A,Expense
+2026-01-03,5000,out,Office expense,Supplier B,Expense
+2026-01-04,8000,in,Sales payment,Customer A,Sales
+2026-01-05,14000,out,Loan EMI,Bank,Debt
+2026-01-06,4000,out,Utilities,Electricity,Expense
+2026-01-07,7000,in,Sales payment,Customer A,Sales
+2026-01-08,13000,out,Loan repayment,Bank,Debt
+2026-01-09,6000,out,Inventory,Supplier A,Expense
+2026-01-10,5000,in,Sales payment,Customer A,Sales

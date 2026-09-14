@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CLUE — Financial Health Intelligence</title>
+
+    <!-- Browser Tab Logo -->
+    <link rel="icon" type="image/png" href="/clue-logo.png">
+
+    <!-- Website CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header class="nav">
+    
+        <a class="logo" href="#" id="homeBtn">
+    
+            <span class="logo-circle">
+                <img src="/clue-logo.png" alt="CLUE" class="clue-logo">
+            </span>
+    
+        </a>
+
+        <nav>
+            <a href="#" id="navHome">Home</a>
+            <a href="#product">Product</a>
+            <a href="#methodology">Methodology</a>
+            <a href="#about">About</a>
+        </nav>
+
+        <div class="nav-right">
+            <select id="languageSelect">
+                <option value="en">English</option>
+                <option value="hi">हिंदी</option>
+                <option value="te">తెలుగు</option>
+            </select>
+            <button class="nav-cta" id="startBtn">Check Financial Health</button>
+        </div>
+    </header>
+
+
+    <!-- LANDING -->
+    <main id="landing">
+
+        <section class="hero">
+            <div class="hero-copy">
+                <span class="eyebrow">SMALL BUSINESS FINANCIAL INTELLIGENCE</span>
+
+                <h1>
+                    Know your financial health
+                    <span>before it becomes a crisis.</span>
+                </h1>
+
+                <p>
+                    CLUE analyzes your business transactions to uncover
+                    cash-flow pressure, unusual activity and credit or debt risk.
+                </p>
+
+                <button class="hero-btn" id="heroStart">
+                    Check Financial Health <span>→</span>
+                </button>
+
+                <div class="hero-points">
+                    <span>Cash Flow</span>
+                    <span>Anomaly Detection</span>
+                    <span>Credit & Debt</span>
+                </div>
+            </div>
+
+            <div class="hero-visual">
+                <div class="visual-card">
+                    <div class="visual-top">
+                        <span>FINANCIAL HEALTH</span>
+                        <span class="green-dot"></span>
+                    </div>
+
+                    <div class="visual-score">82<span>/100</span></div>
+                    <div class="visual-status">STABLE</div>
+
+                    <div class="mini-chart">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+
+                    <div class="visual-bottom">
+                        <span>Cash Flow</span>
+                        <strong>90</strong>
+                        <span>Anomaly</span>
+                        <strong>75</strong>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <section class="info-section" id="product">
+            <div>
+                <span class="eyebrow">WHAT CLUE DOES</span>
+                <h2>One financial check-up.<br>Three important signals.</h2>
+            </div>
+
+            <div class="info-grid">
+                <article>
+                    <span>01</span>
+                    <h3>Cash Flow</h3>
+                    <p>Understand your balance, spending pressure and estimated runway.</p>
+                </article>
+
+                <article>
+                    <span>02</span>
+                    <h3>Unusual Activity</h3>
+                    <p>Find transactions and patterns that are worth reviewing.</p>
+                </article>
+
+                <article>
+                    <span>03</span>
+                    <h3>Credit & Debt</h3>
+                    <p>Identify repayment and debt-related financial pressure.</p>
+                </article>
+            </div>
+        </section>
+
+
+        <section class="method-section" id="methodology">
+            <span class="eyebrow">METHODOLOGY</span>
+            <h2>From transactions to a clear financial picture.</h2>
+
+            <div class="steps">
+                <div><b>01</b><span>Upload</span>
+                    <p>Your transaction CSV</p>
+                </div>
+                <div><b>02</b><span>Analyze</span>
+                    <p>CLUE processes the data</p>
+                </div>
+                <div><b>03</b><span>Understand</span>
+                    <p>See risks and actions</p>
+                </div>
+            </div>
+        </section>
+
+
+        <section class="about-section" id="about">
+            <span class="eyebrow">ABOUT CLUE</span>
+            <h2>Financial clarity for small businesses.</h2>
+            <p>
+                CLUE turns transaction data into understandable financial
+                indicators, early warnings and practical next steps.
+            </p>
+        </section>
+
+    </main>
+
+
+    <!-- APP -->
+    <section id="app" class="app hidden">
+
+        <!-- UPLOAD -->
+        <div id="uploadScreen" class="screen">
+            <div class="screen-inner">
+                <div class="step-line">
+                    <span class="active">01 Upload</span>
+                    <span>02 Analyze</span>
+                    <span>03 Results</span>
+                </div>
+
+                <span class="eyebrow">FINANCIAL CHECK-UP</span>
+                <h1>Upload your business transactions.</h1>
+                <p class="screen-subtitle">
+                    Give CLUE a transaction CSV and get a clear view of your
+                    business financial health.
+                </p>
+
+                <label class="dropzone" id="dropzone">
+                    <div class="upload-symbol">↑</div>
+                    <strong>Drop your CSV here</strong>
+                    <span>or click to browse</span>
+                    <small>CSV files only</small>
+                    <input type="file" id="fileInput" accept=".csv">
+                </label>
+
+                <div id="selectedFile" class="selected-file hidden"></div>
+
+                <button id="analyzeBtn" class="main-btn">
+                    Analyze with CLUE →
+                </button>
+
+                <p id="status" class="status-message"></p>
+            </div>
+        </div>
+
+
+        <!-- ANALYZING -->
+        <div id="loadingScreen" class="screen hidden">
+            <div class="loading-inner">
+                <div class="loading-ring"></div>
+                <span class="eyebrow">CLUE ANALYSIS</span>
+                <h1>Understanding your financial health<span>...</span></h1>
+
+                <div class="analysis-steps">
+                    <div id="step1">○ Cleaning transaction data</div>
+                    <div id="step2">○ Checking cash flow</div>
+                    <div id="step3">○ Detecting unusual activity</div>
+                    <div id="step4">○ Evaluating credit & debt</div>
+                    <div id="step5">○ Calculating health score</div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- RESULTS -->
+        <div id="resultsScreen" class="screen hidden">
+
+            <div class="results-top">
+                <div>
+                    <span class="eyebrow">ANALYSIS COMPLETE</span>
+                    <h1>Your financial health</h1>
+                </div>
+
+                <button id="newAnalysis" class="outline-btn">New Analysis</button>
+            </div>
+
+            <div class="result-nav">
+                <button class="tab active" data-tab="overview">Overview</button>
+                <button class="tab" data-tab="cash">Cash Flow</button>
+                <button class="tab" data-tab="risks">Risks</button>
+                <button class="tab" data-tab="debt">Credit & Debt</button>
+                <button class="tab" data-tab="whatif">What-If</button>
+            </div>
+
+
+            <!-- OVERVIEW -->
+            <div id="overview" class="tab-content active">
+
+                <section class="score-card">
+                    <div class="score-circle" id="scoreCircle">
+                        <div>
+                            <strong id="score">--</strong>
+                            <span>/100</span>
+                        </div>
+                    </div>
+
+                    <div class="score-text">
+                        <span class="eyebrow">FINANCIAL HEALTH SCORE</span>
+                        <h2 id="band">--</h2>
+                        <p id="provisional"></p>
+                        <p>
+                            Your score combines cash-flow strength,
+                            unusual transaction activity and credit/debt pressure.
+                        </p>
+                    </div>
+                </section>
+
+
+                <div class="pillar-grid">
+
+                    <article class="pillar">
+                        <span>Cash Flow</span>
+                        <strong id="cashScore">--</strong>
+                        <small>Cash position & operating strength</small>
+                        <div class="progress"><i id="cashBar"></i></div>
+                    </article>
+
+                    <article class="pillar">
+                        <span>Anomaly Risk</span>
+                        <strong id="anomalyScore">--</strong>
+                        <small>Unusual transaction patterns</small>
+                        <div class="progress"><i id="anomalyBar"></i></div>
+                    </article>
+
+                    <article class="pillar">
+                        <span>Credit / Debt</span>
+                        <strong id="creditScore">--</strong>
+                        <small>Debt & repayment pressure</small>
+                        <div class="progress"><i id="creditBar"></i></div>
+                    </article>
+
+                </div>
+
+
+                <section class="white-card">
+                    <span class="eyebrow">FINANCIAL OUTLOOK</span>
+                    <h2>What the current pattern suggests</h2>
+
+                    <div class="metric-grid">
+                        <div>
+                            <span>Trend</span>
+                            <strong id="trend">--</strong>
+                        </div>
+                        <div>
+                            <span>Estimated Runway</span>
+                            <strong id="runway">--</strong>
+                        </div>
+                    </div>
+
+                    <p id="warning" class="warning-text"></p>
+                </section>
+
+            </div>
+
+
+            <!-- CASH FLOW -->
+            <div id="cash" class="tab-content">
+
+                <section class="page-heading">
+                    <span class="eyebrow">CASH FLOW</span>
+                    <h2>Understand your available financial runway.</h2>
+                </section>
+
+                <section class="white-card large">
+                    <div class="metric-grid">
+                        <div>
+                            <span>Estimated Runway</span>
+                            <strong id="cashRunway">--</strong>
+                        </div>
+                        <div>
+                            <span>Trend</span>
+                            <strong id="cashTrend">--</strong>
+                        </div>
+                    </div>
+
+                    <div class="cash-visual">
+                        <div class="cash-line"></div>
+                    </div>
+
+                    <p>
+                        Runway estimates how long current available cash may
+                        support the business if the recent cash-flow pattern continues.
+                    </p>
+                </section>
+
+            </div>
+
+
+            <!-- RISKS -->
+            <div id="risks" class="tab-content">
+
+                <section class="page-heading">
+                    <span class="eyebrow">RISK INTELLIGENCE</span>
+                    <h2>Things that deserve your attention.</h2>
+                </section>
+
+                <section class="white-card">
+                    <div id="riskList" class="risk-list"></div>
+                </section>
+
+            </div>
+
+
+            <!-- DEBT -->
+            <div id="debt" class="tab-content">
+
+                <section class="page-heading">
+                    <span class="eyebrow">CREDIT & DEBT</span>
+                    <h2>Understand repayment pressure.</h2>
+                </section>
+
+                <section class="white-card">
+                    <div class="debt-score">
+                        <strong id="debtLargeScore">--</strong>
+                        <span>/100</span>
+                    </div>
+
+                    <p>
+                        This indicator reflects debt-related financial pressure
+                        detected from the uploaded transaction data.
+                    </p>
+                </section>
+
+            </div>
+
+
+            <!-- WHAT IF -->
+            <div id="whatif" class="tab-content">
+
+                <section class="page-heading">
+                    <span class="eyebrow">SCENARIO PLANNING</span>
+                    <h2>What if you reduce expenses?</h2>
+                    <p>Explore how reducing expenses could affect estimated runway.</p>
+                </section>
+
+                <section class="white-card simulator">
+
+                    <div class="slider-row">
+                        <span>Expense reduction</span>
+                        <strong><span id="reductionValue">20</span>%</strong>
+                    </div>
+
+                    <input type="range" id="reductionSlider" min="0" max="50" value="20" step="5">
+
+                    <button id="simulateBtn" class="main-btn">
+                        Run Scenario →
+                    </button>
+
+                    <div id="simulationResult" class="simulation-result hidden">
+
+                        <div>
+                            <span>Current Runway</span>
+                            <strong id="currentRunway">--</strong>
+                        </div>
+
+                        <div class="scenario-arrow">→</div>
+
+                        <div>
+                            <span>Scenario Runway</span>
+                            <strong id="scenarioRunway">--</strong>
+                        </div>
+
+                        <div class="improvement">
+                            <span>Improvement</span>
+                            <strong id="runwayImprovement">--</strong>
+                        </div>
+
+                    </div>
+
+                    <p id="simulationMessage"></p>
+                </section>
+
+            </div>
+
+        </div>
+    </section>
+
+
+    <footer>
+        <strong>CLUE</strong>
+        <span>
+            Internal financial risk indicator — not a certified credit rating
+            or confirmation of fraud.
+        </span>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,11 @@
+date,amount,direction,description,counterparty,category
+2026-01-01,50000,in,Sales payment,Customer A,Sales
+2026-01-02,10000,out,Office expense,Supplier A,Expense
+2026-01-03,45000,in,Sales payment,Customer B,Sales
+2026-01-04,8000,out,Utilities,Electricity,Expense
+2026-01-05,55000,in,Sales payment,Customer C,Sales
+2026-01-06,9000,out,Inventory,Supplier B,Expense
+2026-01-07,48000,in,Sales payment,Customer A,Sales
+2026-01-08,7000,out,Office expense,Supplier A,Expense
+2026-01-09,52000,in,Sales payment,Customer B,Sales
+2026-01-10,8500,out,Utilities,Electricity,Expense

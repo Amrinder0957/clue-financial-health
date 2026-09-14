@@ -1,0 +1,5 @@
+date,amount,direction,description,counterparty,category
+2026-01-01,10000,in,Sales payment,Customer A,Sales
+2026-01-02,3000,out,Office expense,Supplier A,Expense
+2026-01-03,5000,in,Sales payment,Customer B,Sales
+2026-01-04,2000,out,Utilities,Electricity,Expense
