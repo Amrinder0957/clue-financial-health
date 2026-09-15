@@ -1105,37 +1105,44 @@ if (simulateBtn) {
 /* =====================================================
    DISPLAY WHAT-IF RESULT
 ===================================================== */
+/* =====================================================
+   DISPLAY WHAT-IF RESULT
+===================================================== */
 
 function displaySimulation(
     result
 ) {
-
     const resultBox =
         $("simulationResult");
 
-
     if (resultBox) {
-
         resultBox.classList.remove(
             "hidden"
         );
     }
 
 
+    /* ---------------- RUNWAY VALUES ---------------- */
+
+    const originalRunway =
+        result.original_runway_days;
+
+    const scenarioRunway =
+        result.scenario_runway_days;
+
+
     $("currentRunway").textContent =
         formatRunway(
-            result.original_runway_days
+            originalRunway
         );
-
 
     $("scenarioRunway").textContent =
         formatRunway(
-            result.scenario_runway_days
+            scenarioRunway
         );
 
 
-    const originalRunway = result.original_runway_days;
-    const scenarioRunway = result.scenario_runway_days;
+    /* ---------------- IMPROVEMENT ---------------- */
 
     const originalIsInfinite =
         originalRunway === "infinite" ||
@@ -1146,33 +1153,111 @@ function displaySimulation(
         scenarioRunway === Infinity;
 
 
-    if (originalIsInfinite && scenarioIsInfinite) {
+    let improvementText;
 
-        $("runwayImprovement")
-            .textContent =
+
+    /*
+       Both are infinite:
+       The business is already sustainable.
+    */
+
+    if (
+        originalIsInfinite &&
+        scenarioIsInfinite
+    ) {
+        improvementText =
             "Already sustainable";
+    }
 
-    } else {
 
-        const improvement =
-            Number(result.runway_change_days);
+    /*
+       Finite runway becomes infinite:
+       This is a significant improvement.
+    */
 
-        if (improvement === Infinity) {
+    else if (
+        scenarioIsInfinite &&
+        !originalIsInfinite
+    ) {
+        improvementText =
+            "Significant";
+    }
 
-            $("runwayImprovement")
-                .textContent =
-                "Significant";
 
-        } else {
+    /*
+       Both are finite:
+       Calculate the actual difference.
+    */
 
-            $("runwayImprovement")
-                .textContent =
-                improvement >= 0
-                    ? `+${improvement.toFixed(1)} days`
-                    : `${improvement.toFixed(1)} days`;
+    else {
+        const original =
+            Number(
+                originalRunway
+            );
+
+        const scenario =
+            Number(
+                scenarioRunway
+            );
+
+
+        if (
+            !Number.isFinite(original) ||
+            !Number.isFinite(scenario)
+        ) {
+            improvementText =
+                "No improvement";
+        }
+
+        else {
+            const improvement =
+                scenario - original;
+
+
+            /*
+               0 → 0
+            */
+
+            if (
+                Math.abs(improvement) < 0.05
+            ) {
+                improvementText =
+                    "No improvement";
+            }
+
+
+            /*
+               Positive improvement
+               Example: 10 → 18
+            */
+
+            else if (
+                improvement > 0
+            ) {
+                improvementText =
+                    `+${improvement.toFixed(1)} days`;
+            }
+
+
+            /*
+               Negative improvement
+               Example: 20 → 15
+            */
+
+            else {
+                improvementText =
+                    `${improvement.toFixed(1)} days`;
+            }
         }
     }
 
+
+    $("runwayImprovement")
+        .textContent =
+        improvementText;
+
+
+    /* ---------------- DESCRIPTION ---------------- */
 
     $("simulationMessage")
         .textContent =

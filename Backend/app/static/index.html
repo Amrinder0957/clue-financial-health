@@ -441,6 +441,18 @@
     </footer>
 
     <script src="app.js"></script>
+    <script>
+        const url = new URL(window.location.href);
+
+        if (url.searchParams.has("utm_source")) {
+            url.searchParams.delete("utm_source");
+            window.history.replaceState(
+                {},
+                document.title,
+                url.pathname + url.search + url.hash
+            );
+        }
+    </script>
 </body>
 
 </html>
