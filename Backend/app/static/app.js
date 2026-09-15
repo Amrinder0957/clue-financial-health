@@ -378,6 +378,11 @@ function displayResults(data) {
 
     $("creditScore").textContent =
         data.credit_debt_score ?? "--";
+    /* ---------------- BUSINESS PERFORMANCE ---------------- */
+
+    renderBusinessPerformance(
+        data.business_performance || {}
+    );
 
 
     setProgress(
@@ -1324,6 +1329,98 @@ function escapeHtml(value) {
             "'",
             "&#039;"
         );
+}
+/* =====================================================
+   BUSINESS PERFORMANCE / PROFIT & LOSS
+   Shown on Overview only
+===================================================== */
+
+function renderBusinessPerformance(performance) {
+
+    const overview = $("overview");
+
+    if (!overview) return;
+
+    const existing = $("businessPerformanceCard");
+
+    if (existing) {
+        existing.remove();
+    }
+
+    const summary = performance.summary || {};
+
+    const revenue = Number(summary.revenue || 0);
+    const expenses = Number(summary.expenses || 0);
+    const netProfit = Number(summary.net_profit || 0);
+    const margin = Number(summary.profit_margin_pct || 0);
+
+    const status = summary.status || "Break-even";
+
+    let statusClass = "watch";
+
+    if (status === "Profitable") {
+        statusClass = "good";
+    } else if (status === "Loss-making") {
+        statusClass = "critical";
+    }
+
+    const formatMoney = value =>
+        "₹" + Number(value).toLocaleString("en-IN", {
+            maximumFractionDigits: 2
+        });
+
+    const card = document.createElement("section");
+
+    card.id = "businessPerformanceCard";
+    card.className = "business-performance-card";
+
+    card.innerHTML = `
+        <div class="performance-header">
+            <div>
+                <p class="performance-eyebrow">
+                    BUSINESS PERFORMANCE
+                </p>
+
+                <h2>Profit & Loss</h2>
+
+                <p class="performance-note">
+                    Cash-based view from uploaded transactions
+                </p>
+            </div>
+
+            <span class="performance-status ${statusClass}">
+                ${escapeHtml(status)}
+            </span>
+        </div>
+
+        <div class="performance-grid">
+
+            <div class="performance-metric">
+                <span>Revenue</span>
+                <strong>${formatMoney(revenue)}</strong>
+            </div>
+
+            <div class="performance-metric">
+                <span>Expenses</span>
+                <strong>${formatMoney(expenses)}</strong>
+            </div>
+
+            <div class="performance-metric">
+                <span>Net Profit / Loss</span>
+                <strong class="${netProfit >= 0 ? "positive" : "negative"}">
+                    ${formatMoney(netProfit)}
+                </strong>
+            </div>
+
+            <div class="performance-metric">
+                <span>Profit Margin</span>
+                <strong>${margin.toFixed(2)}%</strong>
+            </div>
+
+        </div>
+    `;
+
+    overview.prepend(card);
 }
 
 

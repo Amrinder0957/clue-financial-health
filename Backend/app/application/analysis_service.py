@@ -2,11 +2,20 @@ from __future__ import annotations
 
 from dataclasses import dataclass, replace
 
+import pandas as pd
+
 from app.application.pipeline import run_data_pipeline
 from app.domain.analytics.engine import calculate_features
 from app.domain.explain.explain import Explanation, explain_risk
-from app.domain.prediction.prediction import Prediction, calculate_prediction
-from app.domain.recommend.recommend import Recommendation, recommend_for_risk
+from app.domain.performance.performance import calculate_business_performance
+from app.domain.prediction.prediction import (
+    Prediction,
+    calculate_prediction,
+)
+from app.domain.recommend.recommend import (
+    Recommendation,
+    recommend_for_risk,
+)
 from app.domain.risk.risk import (
     Risk,
     detect_anomaly_risks,
@@ -26,6 +35,7 @@ from app.domain.score.score import (
 class AnalysisReport:
     features: object
     score: HealthScore
+    business_performance: object
     risks: list[Risk]
     explanations: list[Explanation]
     recommendations: list[Recommendation]
@@ -44,8 +54,29 @@ def build_analysis_report(
     # 2. Calculate analytics
     features = calculate_features(transactions)
 
-    # 3. Prepare anomaly indicators
-    amounts = [float(txn.amount) for txn in transactions]
+    # 3. Calculate Business Performance / cash-based P&L
+    performance_rows = []
+
+    for txn in transactions:
+        performance_rows.append(
+            {
+                "date": getattr(txn, "date", None),
+                "amount": float(getattr(txn, "amount", 0.0)),
+                "direction": getattr(txn, "direction", ""),
+            }
+        )
+
+    performance_df = pd.DataFrame(performance_rows)
+
+    business_performance = calculate_business_performance(
+        performance_df
+    )
+
+    # 4. Prepare anomaly indicators
+    amounts = [
+        float(txn.amount)
+        for txn in transactions
+    ]
 
     mean_amount = 0.0
     std_amount = 0.0
@@ -101,8 +132,7 @@ def build_analysis_report(
         features.top_outflow_counterparty_ratio,
     )
 
-    # 4. Detect risks
-
+    # 5. Detect risks
     anomaly_risks = detect_anomaly_risks(
         max_z_score=max_z_score,
         round_number_percentage=round_number_percentage,
@@ -140,8 +170,7 @@ def build_analysis_report(
         *credit_risks,
     ]
 
-    # 5. Calculate authoritative pillar scores
-
+    # 6. Calculate authoritative pillar scores
     anomaly_score = calculate_anomaly_score(
         zscore_count=zscore_count,
         round_number_count=round_number_count,
@@ -169,8 +198,7 @@ def build_analysis_report(
     if features.confidence == "LOW":
         score = replace(score, provisional=True)
 
-    # 6. Prediction
-
+    # 7. Prediction
     current_balance = (
         float(features.ending_balance)
         if features.ending_balance is not None
@@ -185,8 +213,7 @@ def build_analysis_report(
         confidence=features.confidence,
     )
 
-    # 7. Explain every detected risk
-
+    # 8. Explain every detected risk
     explanations = [
         explain_risk(
             risk_id=risk.risk_id,
@@ -196,8 +223,7 @@ def build_analysis_report(
         for risk in risks
     ]
 
-    # 8. Generate recommendations
-
+    # 9. Generate recommendations
     recommendations = [
         recommend_for_risk(
             risk_id=risk.risk_id,
@@ -206,11 +232,11 @@ def build_analysis_report(
         for risk in risks
     ]
 
-    # 9. Final report
-
+    # 10. Final report
     return AnalysisReport(
         features=features,
         score=score,
+        business_performance=business_performance,
         risks=risks,
         explanations=explanations,
         recommendations=recommendations,

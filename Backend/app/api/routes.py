@@ -170,6 +170,8 @@ async def create_analysis(
                     item.__dict__
                     for item in report.recommendations
                 ],
+            "business_performance":
+                report.business_performance,
         })
 
         db = SessionLocal()
